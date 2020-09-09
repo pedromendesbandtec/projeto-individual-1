@@ -1,5 +1,6 @@
 package br.com.bandtec.projetoindividual1;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -13,17 +14,19 @@ public class ControllerInstrumento {
 
     private boolean verificaInicio = true;
 
-    @PostMapping("/cadastrar/violao")
-    public void cadastrarViolao(@RequestBody Violao v) {
+    @PostMapping("/violao")
+    public ResponseEntity cadastrarViolao(@RequestBody Violao v) {
         produtos.add(v);
+        return ResponseEntity.created(null).build();
     }
 
-    @PostMapping("/cadastrar/saxofone")
-    public void cadastrarSaxofone(@RequestBody Saxofone s) {
+    @PostMapping("/saxofone")
+    public ResponseEntity cadastrarSaxofone(@RequestBody Saxofone s) {
         produtos.add(s);
+        return ResponseEntity.created(null).build();
     }
 
-    @GetMapping("/listar/{instrumento}")
+    @GetMapping("/{instrumento}")
     public List<Produto> getProdutos(@PathVariable String instrumento) {
 
         if (verificaInicio == true) {
@@ -62,9 +65,14 @@ public class ControllerInstrumento {
 
     }
 
-    @DeleteMapping("/excluir/{id}")
-    public void excluirInstrumento(@PathVariable int id) {
-        produtos.remove(id - 1);
+    @DeleteMapping("/{id}")
+    public ResponseEntity excluirInstrumento(@PathVariable int id) {
+        if (produtos.size() >= id) {
+            produtos.remove(id - 1);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
